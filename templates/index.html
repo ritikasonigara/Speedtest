@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function(){
+    $("#Go").click(function(){
+      $.ajax({url: "http://localhost:5000/currentspeed", success: function(result){
+        var obj = JSON.parse(result);
+        $("#div2").html("Ping(ms):"+obj[0]+"<br>"+"Download(Mbps):"+obj[1] +"<br>"+"Upload(Mbps):"+obj[2]);
+        console.log("Ping(ms):",obj[0])
+        console.log("Download(Mbps):",obj[1])
+        console.log("Upload(Mbps):",obj[2])
+      }});
+    });
+  });
+
+  $(document).ready(function(){
+    $.ajax({url: "http://localhost:5000/monitorspeed", success: function(result){
+        $("#div3").html("Your internet speed is being monitored.");
+        console.log("Started monitoring your internetspeed");
+      }
+    });
+  });
+
+  function alerting(plan) {
+    $.ajax({url: "http://localhost:5000/alert", type: 'POST', data: [{name: 'plan', value: plan}], success: function(result){
+        if (result == "True")
+        alert('Internet Speed below threshold.');
+        else
+        console.log('Desired internet speed is obtained')
+        },
+        complete: function() {
+        // Schedule the next request when the current one's complete
+        setTimeout(function(){
+            alerting(plan);}, (4*60*1000));
+        }
+    });
+   }
+
+  $(document).ready(function() {
+    $('form').on('submit',function submitting(e){
+      e.preventDefault()
+      plan = document.getElementById('plan').value
+      alerting(plan)
+    });
+  });
+  
+  $(document).ready(function(){
+    $("#optimum").click(function(){
+      $.ajax({url: "http://localhost:5000/optimum", success: function(result){
+        $("#div4").html("Best time to surf is between "+result);
+        console.log("Best time to surf is between "+result);
+      }});
+    });
+  });
+
+  $(document).ready(function plot () {
+    $.ajax({url: "http://localhost:5000/plot", success: function(result) {
+      if (result == "")
+        console.log("image yet to be updated")
+      else (result != "")
+        console.log(result)
+        $("#aa").attr("src", "<relative plot image path>?timestamp=" + new Date().getTime())           
+      },
+      complete: function() {
+        // Schedule the next request when the current one's complete
+        setTimeout(plot,(3*60*1000));
+      }
+    });
+  });
+  
+</script>
+</head>
+
+<body>
+    <div id="div1"><h2>Find your Internet speed here.</h2></div>
+    <button id ="Go">Find speed</button>
+    <br>
+    <div id="div2"></div>
+    <br><br>
+
+    <h2>Alert Subscription</h2>
+    <h3>Your network speed is being monitored for analysis.</h3>
+    <p>Enter your internet plan and click subscribe to get alerts if the speed drops below promised speed.</p>
+    <form>
+      <input name = "plan" id="plan" type="number" placeholder="Enter your internet plan">
+      <button type='submit'>Subscribe Alerts</button>
+    </form>
+    <br><br>
+
+    <div id="div3"><h2>To know the optimum time to surf. Click "Find Optimum time"</h2></div>
+    <br>
+    <button id="optimum">Find Optimum time</button>
+    <br>
+    <div id="div4"></div>
+    <br><br>
+
+    <div id="div5"><h2>Get a visual representation of your internet speed here</h2></div>
+    <img id="aa" src = "plot image path(location mentioned in plot_data function)"/>
+    <br><br>
+</body>
+
+</html>
