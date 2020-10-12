@@ -1,4 +1,6 @@
-### Speedtest
+# Speedtest
+
+
 ## Description
 Web Application to run Speedtest on internet connection and collect speed data for add-on features. 
 
@@ -8,7 +10,7 @@ Web Application to run Speedtest on internet connection and collect speed data f
 
 ## Instructions to run
 
-# Prerequisite
+### Prerequisite
 1. pip install the following python packages: 
     - speedtest-cli
     - pandas
@@ -16,7 +18,7 @@ Web Application to run Speedtest on internet connection and collect speed data f
     - flask
     - flask_cors
 
-# TO run
+### To run
   - Run the flask_api.py to start a local server.
   - Load http:\\loaclhost:5000\ in the browser.
   - Check out the features on the page.
