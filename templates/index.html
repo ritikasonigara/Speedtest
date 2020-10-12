@@ -1,24 +1,30 @@
 <!DOCTYPE html>
 <html>
 <head>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/style.css') }}">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script>
     $(document).ready(function(){
     $("#Go").click(function(){
       $.ajax({url: "http://localhost:5000/currentspeed", success: function(result){
         var obj = JSON.parse(result);
-        $("#div2").html("Ping(ms):"+obj[0]+"<br>"+"Download(Mbps):"+obj[1] +"<br>"+"Upload(Mbps):"+obj[2]);
         console.log("Ping(ms):",obj[0])
         console.log("Download(Mbps):",obj[1])
         console.log("Upload(Mbps):",obj[2])
+        
+        $("#div2").html("Ping(ms): "+obj[0]+"<br>"+"Download(Mbps): "+obj[1] +"<br>"+"Upload(Mbps): "+obj[2]);
+        $("#modalTitle").html("Speed Test Results");
+        $("#dataModal").modal('show');
       }});
     });
   });
 
   $(document).ready(function(){
     $.ajax({url: "http://localhost:5000/monitorspeed", success: function(result){
-        $("#div3").html("Your internet speed is being monitored.");
-        console.log("Started monitoring your internetspeed");
+        $("#internetSpeedMonitoring").html("Your Internet Speed is being monitored in the background.");
+        console.log("Started monitoring the Internet Speed");
       }
     });
   });
@@ -49,8 +55,9 @@
   $(document).ready(function(){
     $("#optimum").click(function(){
       $.ajax({url: "http://localhost:5000/optimum", success: function(result){
-        $("#div4").html("Best time to surf is between "+result);
-        console.log("Best time to surf is between "+result);
+        $("#div2").html("Best time to surf is between "+result);
+        $("#modalTitle").html("Optimum Time");
+        $("#dataModal").modal('show');
       }});
     });
   });
@@ -61,7 +68,7 @@
         console.log("image yet to be updated")
       else (result != "")
         console.log(result)
-        $("#aa").attr("src", "<relative plot image path>?timestamp=" + new Date().getTime())           
+        $("#speedRepresentation").attr("src", "static/img/image.png?timestamp=" + new Date().getTime())           
       },
       complete: function() {
         // Schedule the next request when the current one's complete
@@ -70,35 +77,95 @@
     });
   });
   
-</script>
+  </script>
+
 </head>
 
 <body>
-    <div id="div1"><h2>Find your Internet speed here.</h2></div>
-    <button id ="Go">Find speed</button>
-    <br>
-    <div id="div2"></div>
+
+    <h2 style="text-align:center">Alert Subscription</h2>
+    <p style="text-align:center">Your network speed is being monitored for analysis.</p>
+
+    <div class="container">
+      <form style="text-align: center;">
+        <div class="form-group">
+          <p style="text-align: center;">Enter your internet plan and click subscribe to get alerts if the speed drops below promised speed.</p>
+          <label for="plan">Plan Type</label>
+          <input type="number" style="width: 25%; text-align: center;" class="form-control center" id="plan" aria-describedby="emailHelp" placeholder="Please enter plan number">
+          <small id="planHelp" class="form-text text-muted">Please enter the Plan Number in Mbps.</small>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+    </div>
+    
+    <!-- <div class="container">
+      <form>
+      <div class="row">
+        <p style="text-align: center;">Enter your internet plan and click subscribe to get alerts if the speed drops below promised speed.</p>
+        <div class="col-25" style="text-align: center;">
+          <label for="plan">Plan Type</label>
+        </div>
+        <div class="col-75">
+          <input type="number" id="plan" name="plan" placeholder="Please enter plan number">
+        </div>
+      </div>
+      <div class="row">
+        <input type="submit" value="Submit">
+      </div>
+      </form>
+    </div> -->
+
     <br><br>
 
-    <h2>Alert Subscription</h2>
-    <h3>Your network speed is being monitored for analysis.</h3>
-    <p>Enter your internet plan and click subscribe to get alerts if the speed drops below promised speed.</p>
-    <form>
-      <input name = "plan" id="plan" type="number" placeholder="Enter your internet plan">
-      <button type='submit'>Subscribe Alerts</button>
-    </form>
+    <div class="container">
+      <div class="row">
+        <div id="div1"><h3 style="text-align: center;">Find your Internet speed here</h3></div>
+          <button type="button" class="btn btn-primary center-block" id ="Go">Find speed</button>
+      </div>
+    </div>
+
     <br><br>
 
-    <div id="div3"><h2>To know the optimum time to surf. Click "Find Optimum time"</h2></div>
-    <br>
-    <button id="optimum">Find Optimum time</button>
-    <br>
-    <div id="div4"></div>
+    <div class="container">
+      <div class="row">
+        <div id="div3" style="text-align: center;"><h3>To know the optimum time to surf, tap the below button "Find Optimum time"</h3></div>
+        <br>
+        <div id="div4" style="text-align: center;"><h4 id="internetSpeedMonitoring"></h4></div>
+        <br>
+        <button type="button" class="btn btn-primary center-block" id="optimum">Find Optimum time</button>
+        <br>
+        <div id="div4"></div>
+      </div>
+    </div>
+
     <br><br>
 
-    <div id="div5"><h2>Get a visual representation of your internet speed here</h2></div>
-    <img id="aa" src = "plot image path(location mentioned in plot_data function)"/>
+    <div id="div5"><h3 style="text-align: center;">Get a visual representation of your internet speed here</h3></div>
+    <img id="speedRepresentation" src = "static/img/image.png" class="center"/>
     <br><br>
+
+
+    <!-- Modal -->
+  <div class="modal fade" id="dataModal" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title" id="modalTitle">Speed Test Results</h4>
+        </div>
+        <div class="modal-body">
+          <div id="div2"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+
 </body>
 
 </html>
