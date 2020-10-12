@@ -21,4 +21,4 @@ Web Application to run Speedtest on internet connection and collect speed data f
 ### To run
   - Run the flask_api.py to start a local server.
   - Load http:\\loaclhost:5000\ in the browser.
-  - Check out the features on the page.
+  - Check out the features on the webpage.
